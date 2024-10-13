@@ -70,6 +70,12 @@ void Test1()
 		std::cout << "Server M2 is good\n";
 }
 
+void Test2()
+{
+	const char I[] = "Alice";
+
+}
+
 int main()
 {
 	Test1();

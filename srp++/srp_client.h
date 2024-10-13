@@ -6,11 +6,32 @@ namespace SRP
 	class CSRPClient : public CSRPCommon
 	{
 	public:
+		/**
+		* @brief Initialize srp client class
+		*
+		* Will initialize N, g based on type params
+		*
+		* @params algorithm The digest algorithm used in calculations. Example(SHA-1, SHA-256...)
+		* @params type The size of the prime number 'N' used in calcualtions. Example(2048bits, 4096bits...)
+		*
+		* @throws srp_runtime_error If failed to get  'N' or 'g'
+		*/
 		CSRPClient(const EHashAlgorithm algorithm, const ENGType type);
 
-		void Step1(std::string_view identity, std::string_view password, std::string_view salt);
-		void Step1(std::string_view identity, std::string_view password, std::string_view salt, int privateKeyLen);
-		void Step1(std::string_view identity, std::string_view password, std::string_view salt, std::string_view privateKey);
+		/**
+		* @brief Execute first step of rsp client.
+		* 
+		* 
+		* 
+		* @params identity 'I' The main identity (username or email) received by the client.
+		* 
+		* @params password 'P' The password used in calculating 'x' used for verifier.
+		* 
+		* @params salt 's' The Salt received from server used in calculation.
+		*/
+		void Step1(std::string_view identity, std::string_view password, std::string_view saltHex);
+		void Step1(std::string_view identity, std::string_view password, std::string_view saltHex, int privateKeyLen);
+		void Step1(std::string_view identity, std::string_view password, std::string_view saltHex, std::string_view privateKeyHex);
 
 		void Step2(std::string_view serverPublicKey);
 

@@ -3,11 +3,29 @@
 #include <cassert>
 #include <vector>
 
+#include "srp_gn.h"
+
 namespace SRP
 {
 CSRPClient::CSRPClient(const EHashAlgorithm algorithm, const ENGType type)
 	: CSRPCommon(algorithm, type)
 {
+}
+
+void CSRPClient::Step1(std::string_view identity, std::string_view password, std::string_view salt)
+{
+	Step1(identity, password, salt, g_NGConstants[(int)m_eNGType].exponentSize);
+}
+
+void CSRPClient::Step1(std::string_view identity, std::string_view password, std::string_view salt, int privateKeyLen)
+{
+	privateKeyLen = std::max(privateKeyLen, MIN_EXPONEN_SIZE);
+
+	BIGNUM_ptr a(BN_new(), ::BN_free);
+	if (!BN_rand(a.get(), privateKeyLen * 8, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY))
+		throw srp_runtime_error("CSRPServer::Step1 failed to generate random private key");
+
+	Step1(identity, password, salt, Bn2HexStr(a.get()));
 }
 
 void CSRPClient::Step1(std::string_view identity, std::string_view password, std::string_view salt, std::string_view privateKey)

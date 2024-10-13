@@ -19,7 +19,11 @@ namespace SRP
 		SHA224,
 		SHA256,
 		SHA384,
-		SHA512
+		SHA512,
+		SHA3_224,
+		SHA3_256,
+		SHA3_384,
+		SHA3_512
 	};
 
 	enum class ENGType
@@ -27,7 +31,9 @@ namespace SRP
 		NG_1024,
 		NG_1536,
 		NG_2048,
+		NG_3072,
 		NG_4096,
+		NG_6144,
 		NG_8192
 	};
 

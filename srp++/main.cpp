@@ -70,13 +70,59 @@ void Test1()
 		std::cout << "Server M2 is good\n";
 }
 
+std::string GenerateVerifier(std::string_view identity, std::string_view password, std::string_view salt, SRP::EHashAlgorithm  algo, SRP::ENGType type)
+{
+	SRP::CSRPClient client(algo, type);
+	client.Step1(identity, password, salt);
+	return client.GetVerifier();
+}
+
+static std::string GenerateRandHex(unsigned int len)
+{
+	SRP::BIGNUM_ptr bn(BN_new(), ::BN_free);
+	if (!BN_rand(bn.get(), len * 8, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY))
+		throw SRP::srp_runtime_error("GenerateRandHex failed to generate random BIGNUM");
+
+	return SRP::Bn2HexStr(bn.get());
+}
+
 void Test2()
 {
-	const char I[] = "Alice";
+	SRP::EHashAlgorithm algo = SRP::EHashAlgorithm::SHA256;
+	SRP::ENGType type = SRP::ENGType::NG_4096;
 
+	std::string s = GenerateRandHex(32);
+	const char I[] = "alice";
+	const char P1[] = "password1234";
+	const char P[] = "password1234";
+
+	std::string v = GenerateVerifier(I, P1, s.data(), algo, type);
+
+	SRP::CSRPServer server(algo, type);
+	SRP::CSRPClient client(algo, type);
+
+	server.Step1(I, s, v);
+	client.Step1(I, P, s);
+
+	client.Step2(server.GetPublicKey());
+	if (!server.Step2(client.GetPublicKey(), client.GetEvidence()))
+	{
+		std::cout << "Client got wrong evidence\n";
+		return;
+	}
+
+	if (!client.Step3(server.GetEvidence()))
+	{
+		std::cout << "Server is a fake!!!\n";
+		return;
+	}
+
+	std::cout << "Success\n";
 }
 
 int main()
 {
-	Test1();
+	//Test1();
+	for (int i = 0; i < 32; i++)
+		Test2();
 }

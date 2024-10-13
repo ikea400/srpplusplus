@@ -8,7 +8,10 @@ namespace SRP
 	public:
 		CSRPClient(const EHashAlgorithm algorithm, const ENGType type);
 
+		void Step1(std::string_view identity, std::string_view password, std::string_view salt);
+		void Step1(std::string_view identity, std::string_view password, std::string_view salt, int privateKeyLen);
 		void Step1(std::string_view identity, std::string_view password, std::string_view salt, std::string_view privateKey);
+
 		void Step2(std::string_view serverPublicKey);
 
 		bool Step3(std::string_view serverEvidence);

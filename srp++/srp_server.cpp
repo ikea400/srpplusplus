@@ -2,12 +2,32 @@
 
 #include <cassert>
 
+#include <openssl/rand.h>
+
+#include "srp_gn.h"
+
 namespace SRP
 {
 
 	CSRPServer::CSRPServer(const EHashAlgorithm algorithm, const ENGType type)
 		: CSRPCommon(algorithm, type)
 	{
+	}
+
+	void CSRPServer::Step1(std::string_view identity, std::string_view salt, std::string_view verifier)
+	{
+		Step1(identity, salt, verifier, g_NGConstants[(int)m_eNGType].exponentSize);
+	}
+
+	void CSRPServer::Step1(std::string_view identity, std::string_view salt, std::string_view verifier, int privateKeyLen)
+	{
+		privateKeyLen = std::max(privateKeyLen, MIN_EXPONEN_SIZE);
+
+		BIGNUM_ptr b(BN_new(), ::BN_free);
+		if (!BN_rand(b.get(), privateKeyLen * 8, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY))
+			throw srp_runtime_error("CSRPServer::Step1 failed to generate random private key");
+
+		Step1(identity, salt, verifier, Bn2HexStr(b.get()));
 	}
 
 	void CSRPServer::Step1(std::string_view identity, std::string_view salt, std::string_view verifier, std::string_view privateKey)

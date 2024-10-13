@@ -285,6 +285,7 @@ BIGNUM* CSRPCommon::Calculate_XY(const BIGNUM* x, const BIGNUM* y, const BIGNUM*
 		|| BN_bn2binpad(y, tmp.data() + numN, numN) < 0
 		|| !Digest(m_eHashAlgorithm, tmp.data(), static_cast<size_t>(numN) * 2, digest, &digestLen))
 		throw srp_runtime_error("CSRPCommon::Calculate_XY Failed to compute XY");
+	
 
 	return BN_bin2bn(digest, digestLen, NULL);
 }
@@ -314,6 +315,10 @@ int InitDigest(EHashAlgorithm alg, EVP_MD_CTX* ctx)
 	case EHashAlgorithm::SHA256: return EVP_DigestInit_ex(ctx, EVP_sha256(), nullptr);
 	case EHashAlgorithm::SHA384: return EVP_DigestInit_ex(ctx, EVP_sha384(), nullptr);
 	case EHashAlgorithm::SHA512: return EVP_DigestInit_ex(ctx, EVP_sha512(), nullptr);
+	case EHashAlgorithm::SHA3_224: return EVP_DigestInit_ex(ctx, EVP_sha3_224(), nullptr);
+	case EHashAlgorithm::SHA3_256: return EVP_DigestInit_ex(ctx, EVP_sha3_256(), nullptr);
+	case EHashAlgorithm::SHA3_384: return EVP_DigestInit_ex(ctx, EVP_sha3_384(), nullptr);
+	case EHashAlgorithm::SHA3_512: return EVP_DigestInit_ex(ctx, EVP_sha3_512(), nullptr);
 	default:
 		return 0;
 	};
@@ -344,6 +349,10 @@ int Digest(EHashAlgorithm alg, const void* data, size_t count, unsigned char* md
 	case EHashAlgorithm::SHA256: return EVP_Digest(data, count, md, size, EVP_sha256(), nullptr);
 	case EHashAlgorithm::SHA384: return EVP_Digest(data, count, md, size, EVP_sha384(), nullptr);
 	case EHashAlgorithm::SHA512: return EVP_Digest(data, count, md, size, EVP_sha512(), nullptr);
+	case EHashAlgorithm::SHA3_224: return EVP_Digest(data, count, md, size, EVP_sha3_224(), nullptr);
+	case EHashAlgorithm::SHA3_256: return EVP_Digest(data, count, md, size, EVP_sha3_256(), nullptr);
+	case EHashAlgorithm::SHA3_384: return EVP_Digest(data, count, md, size, EVP_sha3_384(), nullptr);
+	case EHashAlgorithm::SHA3_512: return EVP_Digest(data, count, md, size, EVP_sha3_512(), nullptr);
 	default:
 		return 0;
 	};

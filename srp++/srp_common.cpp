@@ -7,14 +7,15 @@
 
 namespace SRP
 {
-	std::string CSRPCommon::GetHashedSecret() const
-	{
-		assert(m_pBnHashedSecret_K);
-		return Bn2HexStr(m_pBnHashedSecret_K.get());
-	}
 
-	CSRPCommon::CSRPCommon(const EHashAlgorithm algorithm, const ENGType type)
-	: m_eHashAlgorithm(algorithm), m_eNGType(type)
+std::string CSRPCommon::GetHashedSecret() const
+{
+	assert(m_pBnHashedSecret_K);
+	return Bn2HexStr(m_pBnHashedSecret_K.get());
+}
+
+CSRPCommon::CSRPCommon(const EHashAlgorithm algorithm, const ENGType type)
+: m_eHashAlgorithm(algorithm), m_eNGType(type)
 {
 	SetupNG();
 }

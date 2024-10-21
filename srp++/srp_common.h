@@ -50,8 +50,10 @@ namespace SRP
 	class CSRPCommon
 	{
 	public:
-		CSRPCommon(const EHashAlgorithm algorithm, const ENGType type);
+		std::string GetHashedSecret() const;
 	protected:
+		CSRPCommon(const EHashAlgorithm algorithm, const ENGType type);
+
 		void SaveIdentity(std::string_view identity);
 
 		void SaveSalt(std::string_view sHex);
